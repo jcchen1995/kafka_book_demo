@@ -7,9 +7,9 @@ package chapter4;
 public class TopicCommandUtils {
 
     public static void main(String[] args) {
-//        createTopic();
-//        describeTopic();
-        listTopic();
+        //        createTopic();
+        describeTopic();
+        //        listTopic();
     }
 
     /**

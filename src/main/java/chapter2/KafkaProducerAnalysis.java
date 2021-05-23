@@ -1,10 +1,11 @@
 package chapter2;
 
-import org.apache.kafka.clients.producer.*;
-import org.apache.kafka.common.serialization.StringSerializer;
-
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
+
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringSerializer;
 
 /**
  * 代码清单2-1
@@ -55,15 +56,29 @@ public class KafkaProducerAnalysis {
 
         ProducerRecord<String, String> record = new ProducerRecord<>(topic, "hello, Kafka!");
         try {
+            // 1.「发后即忘」模式；以为发送后，不会对返回值 Future<RecordMetadata> 进行判定
             producer.send(record);
-//            producer.send(record, new Callback() {
-//                @Override
-//                public void onCompletion(RecordMetadata metadata, Exception exception) {
-//                    if (exception == null) {
-//                        System.out.println(metadata.partition() + ":" + metadata.offset());
-//                    }
-//                }
-//            });
+            // 2.「同步」模式
+            //            producer.send(record).get();
+
+            // 3-1.「异步」模式
+            //            Future<RecordMetadata> future = producer.send(record);
+            //            // do something...
+            //            RecordMetadata recordMetadata = future.get();
+
+            // 3-2.「异步」模式，增加回调方法
+            //            Future<RecordMetadata> future = producer.send(record, (metadata, exception) -> {
+            //                // do something..
+            //            });
+
+            //            producer.send(record, new Callback() {
+            //                @Override
+            //                public void onCompletion(RecordMetadata metadata, Exception exception) {
+            //                    if (exception == null) {
+            //                        System.out.println(metadata.partition() + ":" + metadata.offset());
+            //                    }
+            //                }
+            //            });
         } catch (Exception e) {
             e.printStackTrace();
         }

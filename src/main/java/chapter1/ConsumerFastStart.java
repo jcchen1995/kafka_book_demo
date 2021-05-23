@@ -1,12 +1,12 @@
 package chapter1;
 
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
+
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 /**
  * 代码清单1-2
@@ -24,6 +24,7 @@ public class ConsumerFastStart {
         properties.put("value.deserializer",
                 "org.apache.kafka.common.serialization.StringDeserializer");
         properties.put("bootstrap.servers", brokerList);
+        // 消费组
         properties.put("group.id", groupId);
 
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
