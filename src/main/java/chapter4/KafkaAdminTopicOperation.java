@@ -1,5 +1,6 @@
 package chapter4;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -45,7 +46,8 @@ public class KafkaAdminTopicOperation {
     public static void createTopic() {
         String brokerList = "localhost:9092";
         // 主题名称
-        String topic = "topic-admin";
+        String topic1 = "topic-admin1";
+        String topic2 = "topic-admin2";
 
         Properties props = new Properties();
         props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, brokerList);
@@ -72,16 +74,38 @@ public class KafkaAdminTopicOperation {
         //        newTopic.configs(configs);
 
         Map<Integer, List<Integer>> replicasAssignments = new HashMap<>();
+        // 分区 0，在 brokerId 为 0 的实例上
         replicasAssignments.put(0, Arrays.asList(0));
+        // 分区 1，在 brokerId 为 0 的实例上
         replicasAssignments.put(1, Arrays.asList(0));
+        // 分区 2，在 brokerId 为 0 的实例上
         replicasAssignments.put(2, Arrays.asList(0));
+        // 分区 3，在 brokerId 为 0 的实例上
         replicasAssignments.put(3, Arrays.asList(0));
 
-        NewTopic newTopic = new NewTopic(topic, replicasAssignments);
+        NewTopic newTopic = new NewTopic(topic1, replicasAssignments);
 
+        Map<Integer, List<Integer>> replicasAssignments2 = new HashMap<>();
+        // 分区 0，在 brokerId 为 0 的实例上
+        replicasAssignments2.put(0, Arrays.asList(0));
+        // 分区 1，在 brokerId 为 0 的实例上
+        replicasAssignments2.put(1, Arrays.asList(0));
+        // 分区 2，在 brokerId 为 0 的实例上
+        replicasAssignments2.put(2, Arrays.asList(0));
+        // 分区 3，在 brokerId 为 0 的实例上
+        replicasAssignments2.put(3, Arrays.asList(0));
+
+        NewTopic newTopic2 = new NewTopic(topic2, replicasAssignments2);
+
+        List<NewTopic> list = new ArrayList<>();
+        list.add(newTopic);
+        list.add(newTopic2);
         //代码清单4-4 可以从这里跟进去
-        CreateTopicsResult result = client.
-                createTopics(Collections.singleton(newTopic));
+        //        CreateTopicsResult result = client.
+        //                createTopics(Collections.singleton(newTopic));
+        CreateTopicsResult result = client.createTopics(list);
+
+
         try {
             result.all().get();
         } catch (InterruptedException | ExecutionException e) {
