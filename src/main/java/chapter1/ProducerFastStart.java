@@ -29,14 +29,26 @@ public class ProducerFastStart {
 
         KafkaProducer<String, String> producer =
                 new KafkaProducer<>(properties);
-        ProducerRecord<String, String> record =
-                new ProducerRecord<>(topic, "hello, Kafka!");
-        try {
-            producer.send(record);
-//            producer.send(record).get();
-        } catch (Exception e) {
-            e.printStackTrace();
+        StringBuilder recordValueBuilder = new StringBuilder("hello, Kafka!");
+        for (int i = 0; i < 50; i++) {
+            recordValueBuilder.append(" hello, Kafka!");
         }
-        producer.close();
+        System.err.println(recordValueBuilder.toString());
+        while (true) {
+            ProducerRecord<String, String> record =
+                    new ProducerRecord<>(topic, recordValueBuilder.toString());
+            try {
+                producer.send(record);
+                //            producer.send(record).get();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            //            try {
+            //                Thread.sleep(3000);
+            //            } catch (InterruptedException e) {
+            //                e.printStackTrace();
+            //            }
+        }
+        //        producer.close();
     }
 }

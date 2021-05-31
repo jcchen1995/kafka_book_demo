@@ -34,7 +34,7 @@ public class ConsumerFastStart {
             ConsumerRecords<String, String> records =
                     consumer.poll(Duration.ofMillis(1000));
             for (ConsumerRecord<String, String> record : records) {
-                System.out.println(record.value());
+                System.err.println(System.currentTimeMillis() + " " + record.value());
             }
         }
     }
