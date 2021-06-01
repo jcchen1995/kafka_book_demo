@@ -1,10 +1,10 @@
 package chapter2;
 
-import org.apache.kafka.common.errors.SerializationException;
-import org.apache.kafka.common.serialization.Serializer;
-
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
+
+import org.apache.kafka.common.errors.SerializationException;
+import org.apache.kafka.common.serialization.Serializer;
 
 /**
  * 代码清单2-2
@@ -13,6 +13,7 @@ import java.util.Map;
  * Created by 朱小厮 on 2019-02-27
  */
 public class StringSerializer implements Serializer<String> {
+    // jc 在 master 的注释
     private String encoding = "UTF8";
 
     @Override
