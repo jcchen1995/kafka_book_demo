@@ -14,6 +14,7 @@ import org.apache.kafka.common.serialization.Serializer;
  */
 public class StringSerializer implements Serializer<String> {
     // jc 在 master 的注释
+    // jc 在 master 的注释
     private String encoding = "UTF8";
 
     @Override
