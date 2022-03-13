@@ -1,11 +1,5 @@
 package chapter3;
 
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.serialization.StringDeserializer;
-
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
@@ -13,6 +7,12 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.serialization.StringDeserializer;
 
 /**
  * 代码清单3-12
@@ -31,6 +31,7 @@ public class ThirdMultiConsumerThreadDemo {
                 StringDeserializer.class.getName());
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, brokerList);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+        // 允许自动提交
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
         return props;
     }
@@ -38,7 +39,10 @@ public class ThirdMultiConsumerThreadDemo {
     public static void main(String[] args) {
         Properties props = initConfig();
         KafkaConsumerThread consumerThread = new KafkaConsumerThread(props, topic,
+                // 可使用的处理器数
                 Runtime.getRuntime().availableProcessors());
+        // 总的来说，如果不拓展；这样写还是一个实例一个 consumer
+        // 所以这种写法是可以拓展的
         consumerThread.start();
     }
 
@@ -51,8 +55,10 @@ public class ThirdMultiConsumerThreadDemo {
             kafkaConsumer = new KafkaConsumer<>(props);
             kafkaConsumer.subscribe(Collections.singletonList(topic));
             this.threadNumber = threadNumber;
+            // 线程池
             executorService = new ThreadPoolExecutor(threadNumber, threadNumber,
                     0L, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(1000),
+                    // 如果担心线程池消费不过来，那么拒绝策略使用 CallerRunsPolicy
                     new ThreadPoolExecutor.CallerRunsPolicy());
         }
 

@@ -1,15 +1,15 @@
 package chapter3;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.kafka.clients.consumer.ConsumerInterceptor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 代码清单3-10
@@ -27,6 +27,7 @@ public class ConsumerInterceptorTTL implements
         Map<TopicPartition, List<ConsumerRecord<String, String>>> newRecords
                 = new HashMap<>();
         for (TopicPartition tp : records.partitions()) {
+            // 要消费的所有消息
             List<ConsumerRecord<String, String>> tpRecords = records.records(tp);
             List<ConsumerRecord<String, String>> newTpRecords = new ArrayList<>();
             for (ConsumerRecord<String, String> record : tpRecords) {
@@ -38,6 +39,7 @@ public class ConsumerInterceptorTTL implements
                 newRecords.put(tp, newTpRecords);
             }
         }
+        // 过期的消息就不要再推过来了
         return new ConsumerRecords<>(newRecords);
     }
 

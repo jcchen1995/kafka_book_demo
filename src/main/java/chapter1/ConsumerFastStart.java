@@ -1,12 +1,12 @@
 package chapter1;
 
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
+
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 /**
  * 代码清单1-2
@@ -19,14 +19,18 @@ public class ConsumerFastStart {
 
     public static void main(String[] args) {
         Properties properties = new Properties();
+        // key 序列化方式
         properties.put("key.deserializer",
                 "org.apache.kafka.common.serialization.StringDeserializer");
+        // value 序列化方式
         properties.put("value.deserializer",
                 "org.apache.kafka.common.serialization.StringDeserializer");
+        // broker 地址列表
         properties.put("bootstrap.servers", brokerList);
         properties.put("group.id", groupId);
 
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
+        // TODO，subscribe 方法的参数是一个 List，那么意味着一个 consumer 可以订阅多个 topic
         consumer.subscribe(Collections.singletonList(topic));
 
         while (true) {

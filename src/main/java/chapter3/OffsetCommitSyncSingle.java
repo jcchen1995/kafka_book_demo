@@ -1,13 +1,17 @@
 package chapter3;
 
-import org.apache.kafka.clients.consumer.*;
-import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.serialization.StringDeserializer;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.serialization.StringDeserializer;
 
 /**
  * 代码清单3-3
@@ -28,6 +32,7 @@ public class OffsetCommitSyncSingle {
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, brokerList);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        // 关闭自动提交
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         return props;
     }
@@ -46,6 +51,8 @@ public class OffsetCommitSyncSingle {
                     long offset = record.offset();
                     TopicPartition partition =
                             new TopicPartition(record.topic(), record.partition());
+                    // 手动提交，提交的 offset 是 lastConsumedOffset + 1
+                    // 指定提交位置
                     consumer.commitSync(Collections
                             .singletonMap(partition, new OffsetAndMetadata(offset + 1)));
                 }

@@ -1,10 +1,10 @@
 package chapter2;
 
+import java.util.Map;
+
 import org.apache.kafka.clients.producer.ProducerInterceptor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
-
-import java.util.Map;
 
 /**
  * 代码清单2-6
@@ -15,6 +15,7 @@ public class ProducerInterceptorPrefix implements
     private volatile long sendSuccess = 0;
     private volatile long sendFailure = 0;
 
+    // 在调用真正的 doSend 方法前调用 interceptor 的 onSend
     @Override
     public ProducerRecord<String, String> onSend(
             ProducerRecord<String, String> record) {
@@ -22,11 +23,12 @@ public class ProducerInterceptorPrefix implements
         return new ProducerRecord<>(record.topic(),
                 record.partition(), record.timestamp(),
                 record.key(), modifiedValue, record.headers());
-//        if (record.value().length() < 5) {
-//            throw new RuntimeException();
-//        }
-//        return record;
+        //        if (record.value().length() < 5) {
+        //            throw new RuntimeException();
+        //        }
+        //        return record;
     }
+
 
     @Override
     public void onAcknowledgement(
@@ -39,6 +41,7 @@ public class ProducerInterceptorPrefix implements
         }
     }
 
+    // close 可以打印一些东西
     @Override
     public void close() {
         double successRatio = (double) sendSuccess / (sendFailure + sendSuccess);

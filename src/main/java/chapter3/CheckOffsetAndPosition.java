@@ -1,13 +1,17 @@
 package chapter3;
 
-import org.apache.kafka.clients.consumer.*;
-import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.serialization.StringDeserializer;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.serialization.StringDeserializer;
 
 /**
  * 代码清单3-2
@@ -46,14 +50,23 @@ public class CheckOffsetAndPosition {
             }
             List<ConsumerRecord<String, String>> partitionRecords
                     = records.records(tp);
+            // 最后一个元素的 offset
             lastConsumedOffset = partitionRecords
                     .get(partitionRecords.size() - 1).offset();
-            consumer.commitSync();//同步提交消费位移
+            consumer.commitSync();//同步提交消费位移 // 切记要消费后才能提交
         }
-        System.out.println("comsumed offset is " + lastConsumedOffset);
+        // 这里输出的值和下面输出的值差值为 1
+        System.out.println("comsumed offset is " + lastConsumedOffset); // lastConsumedOffset==337
         OffsetAndMetadata offsetAndMetadata = consumer.committed(tp);
-        System.out.println("commited offset is " + offsetAndMetadata.offset());
+        System.out.println("commited offset is " + offsetAndMetadata.offset()); // committedOffset==338
         long posititon = consumer.position(tp);
-        System.out.println("the offset of the next record is " + posititon);
+        System.out.println("the offset of the next record is " + posititon);  // position==338
+
+
+        /**
+         * 注意：position、lastConsumedOffset 和 commitedOffset 这三者的区别
+         *
+         * commitedOffset：告诉 kafka，我已经完成了[0, commitedOffset) 的消息消费了，下次我要从 commitedOffset 开始拉起
+         */
     }
 }

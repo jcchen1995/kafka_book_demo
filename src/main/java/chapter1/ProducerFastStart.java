@@ -1,9 +1,9 @@
 package chapter1;
 
+import java.util.Properties;
+
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-
-import java.util.Properties;
 
 /**
  * 代码清单1-1
@@ -27,8 +27,10 @@ public class ProducerFastStart {
         ProducerRecord<String, String> record =
                 new ProducerRecord<>(topic, "hello, Kafka!");
         try {
+            // 返回的是 future
+            // 核心代码：org.apache.kafka.clients.producer.KafkaProducer.doSend
             producer.send(record);
-//            producer.send(record).get();
+            //            producer.send(record).get();
         } catch (Exception e) {
             e.printStackTrace();
         }

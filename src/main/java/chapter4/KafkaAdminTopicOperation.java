@@ -1,9 +1,19 @@
 package chapter4;
 
-import org.apache.kafka.clients.admin.*;
-
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ExecutionException;
+
+import org.apache.kafka.clients.admin.AdminClient;
+import org.apache.kafka.clients.admin.AdminClientConfig;
+import org.apache.kafka.clients.admin.CreateTopicsResult;
+import org.apache.kafka.clients.admin.DescribeTopicsResult;
+import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.admin.TopicDescription;
 
 /**
  * 代码清单4-3 & 4-4
@@ -25,6 +35,7 @@ public class KafkaAdminTopicOperation {
         DescribeTopicsResult result = client.describeTopics(Collections.singleton(topic));
         try {
             Map<String, TopicDescription> descriptionMap =  result.all().get();
+            // 打印出 description
             System.out.println(descriptionMap.get(topic));
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
@@ -48,6 +59,7 @@ public class KafkaAdminTopicOperation {
 //        newTopic.configs(configs);
 
         Map<Integer, List<Integer>> replicasAssignments = new HashMap<>();
+        // 这些 key 是用来干啥
         replicasAssignments.put(0, Arrays.asList(0));
         replicasAssignments.put(1, Arrays.asList(0));
         replicasAssignments.put(2, Arrays.asList(0));

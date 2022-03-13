@@ -1,12 +1,12 @@
 package chapter2;
 
+import java.util.Properties;
+import java.util.concurrent.ExecutionException;
+
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
-
-import java.util.Properties;
-import java.util.concurrent.ExecutionException;
 
 /**
  * 代码清单2-4
@@ -21,6 +21,7 @@ public class ProducerSelfSerializer {
         Properties properties = new Properties();
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
                 StringSerializer.class.getName());
+        // 自定义 value 的序列化器
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
                 CompanySerializer.class.getName());
 //        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,

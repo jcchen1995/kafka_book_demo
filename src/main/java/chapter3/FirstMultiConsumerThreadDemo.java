@@ -1,14 +1,14 @@
 package chapter3;
 
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.Properties;
+
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
-
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.Properties;
 
 /**
  * 代码清单 3-11
@@ -27,6 +27,7 @@ public class FirstMultiConsumerThreadDemo {
                 StringDeserializer.class.getName());
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, brokerList);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+        // 允许自动提交
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
         return props;
     }
@@ -35,6 +36,7 @@ public class FirstMultiConsumerThreadDemo {
         Properties props = initConfig();
         int consumerThreadNum = 4;
         for (int i = 0; i < consumerThreadNum; i++) {
+            // 一个线程就是一个消费者实例
             new KafkaConsumerThread(props, topic).start();
         }
     }
